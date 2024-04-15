@@ -22,11 +22,27 @@ const db = new DataSource({
 
 export async function clearDB() {
   const runner = db.createQueryRunner();
-  await runner.query("SET session_replication_role = 'replica'");
 
-  await Promise.all(db.entityMetadatas.map(async (entity) => runner.query(`ALTER TABLE "${entity.tableName}" DISABLE TRIGGER ALL`)));
-  await Promise.all(db.entityMetadatas.map(async (entity) => runner.query(`DROP TABLE IF EXISTS "${entity.tableName}" CASCADE`)));
-  await runner.query("SET session_replication_role = 'origin'");
+  // Désactiver temporairement les contraintes de clé étrangère pour pouvoir supprimer les tables sans problème
+  await runner.query("PRAGMA foreign_keys=OFF");
+
+  await Promise.all(
+    db.entityMetadatas.map(async (entity) => {
+      // Supprimer les contraintes de clé étrangère
+      await runner.query(`PRAGMA foreign_key_list("${entity.tableName}")`).then(async (response: any[]) => {
+        for (const constraint of response) {
+          await runner.query(`PRAGMA foreign_keys = OFF;`);
+          await runner.query(`DROP TABLE IF EXISTS "${constraint.table}";`);
+        }
+      });
+
+      // Supprimer la table
+      await runner.query(`DROP TABLE IF EXISTS "${entity.tableName}"`);
+    })
+  );
+
+  // Réactiver les contraintes de clé étrangère
+  await runner.query("PRAGMA foreign_keys=ON");
   await db.synchronize();
 }
 

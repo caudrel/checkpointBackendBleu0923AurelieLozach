@@ -14,6 +14,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
+
+db.initialize();
+
 const httpServer = http.createServer(app);
 
 buildSchema({

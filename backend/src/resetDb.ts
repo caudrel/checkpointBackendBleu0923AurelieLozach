@@ -20,3 +20,5 @@ export async function main() {
   await portugal.save();
   await belgium.save();
 }
+
+main();
