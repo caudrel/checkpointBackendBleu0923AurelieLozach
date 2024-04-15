@@ -14,11 +14,15 @@ export class Country extends BaseEntity {
 
   @Field()
   @Column()
-  code: string;
+  countryCode: string;
 
   @Field()
   @Column()
   emoji: string;
+
+  @Field()
+  @Column()
+  continentCode: string;
 }
 
 @InputType()
@@ -27,8 +31,11 @@ export class NewCountryInput {
   name: string;
 
   @Field()
-  code: string;
+  countryCode: string;
 
   @Field()
   emoji: string;
+
+  @Field()
+  continentCode: string;
 }

@@ -4,14 +4,6 @@ import env from "./env";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-// export default new DataSource({
-//   type: "sqlite",
-//   database: "geography.sqlite",
-//   entities: ["src/entities/*.ts"],
-//   synchronize: true,
-//   logging: true,
-// });
-
 const db = new DataSource({
   type: "sqlite",
   database: "geography.sqlite",
@@ -22,8 +14,6 @@ const db = new DataSource({
 
 export async function clearDB() {
   const runner = db.createQueryRunner();
-
-  // Désactiver temporairement les contraintes de clé étrangère pour pouvoir supprimer les tables sans problème
   await runner.query("PRAGMA foreign_keys=OFF");
 
   await Promise.all(
@@ -35,13 +25,10 @@ export async function clearDB() {
           await runner.query(`DROP TABLE IF EXISTS "${constraint.table}";`);
         }
       });
-
-      // Supprimer la table
       await runner.query(`DROP TABLE IF EXISTS "${entity.tableName}"`);
     })
   );
 
-  // Réactiver les contraintes de clé étrangère
   await runner.query("PRAGMA foreign_keys=ON");
   await db.synchronize();
 }
