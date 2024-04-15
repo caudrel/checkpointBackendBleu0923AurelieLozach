@@ -6,12 +6,13 @@ export async function main() {
   await db.initialize();
   await clearDB();
 
-  const france = Country.create({ name: "France", code: "FR", emoji: "🇫🇷" });
-  const germany = Country.create({ name: "Germany", code: "DE", emoji: "🇩🇪" });
-  const spain = Country.create({ name: "Spain", code: "ES", emoji: "🇪🇸" });
-  const italy = Country.create({ name: "Italy", code: "IT", emoji: "🇮🇹" });
-  const portugal = Country.create({ name: "Portugal", code: "PT", emoji: "🇵🇹" });
-  const belgium = Country.create({ name: "Belgium", code: "BE", emoji: "🇧🇪" });
+  const france = Country.create({ name: "France", countryCode: "FR", emoji: "🇫🇷", continentCode: "EU" });
+  const germany = Country.create({ name: "Germany", countryCode: "DE", emoji: "🇩🇪", continentCode: "EU" });
+  const spain = Country.create({ name: "Spain", countryCode: "ES", emoji: "🇪🇸", continentCode: "EU" });
+  const italy = Country.create({ name: "Italy", countryCode: "IT", emoji: "🇮🇹", continentCode: "EU" });
+  const portugal = Country.create({ name: "Portugal", countryCode: "PT", emoji: "🇵🇹", continentCode: "EU" });
+  const belgium = Country.create({ name: "Belgium", countryCode: "BE", emoji: "🇧🇪", continentCode: "EU" });
+  const brazil = Country.create({ name: "Brazil", countryCode: "BR", emoji: "🇧🇷", continentCode: "SA" });
 
   await france.save();
   await germany.save();
@@ -19,6 +20,7 @@ export async function main() {
   await italy.save();
   await portugal.save();
   await belgium.save();
+  await brazil.save();
 }
 
 main();

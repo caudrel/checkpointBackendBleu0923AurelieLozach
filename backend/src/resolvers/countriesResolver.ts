@@ -12,13 +12,24 @@ class CountriesResolver {
   }
 
   @Query(() => Country)
-  async country(@Arg("code", () => String) code: string) {
+  async country(@Arg("countryCode", () => String) countryCode: string) {
     try {
-      const country = await Country.findOne({ where: { code } });
+      const country = await Country.findOne({ where: { countryCode } });
       return country;
     } catch (error) {
       console.error("Erreur lors de la recherche du pays :", error);
       return null;
+    }
+  }
+
+  @Query(() => [Country])
+  async countriesByContinent(@Arg("continentCode", () => String) continentCode: string) {
+    try {
+      const countries = await Country.find({ where: { continentCode } });
+      return countries;
+    } catch (error) {
+      console.error("Erreur lors de la recherche des pays par continent :", error);
+      return [];
     }
   }
 
@@ -38,8 +49,9 @@ class CountriesResolver {
   private createNewCountryData(data: NewCountryInput): DeepPartial<Country> {
     return {
       name: data.name,
-      code: data.code,
+      countryCode: data.countryCode,
       emoji: data.emoji,
+      continentCode: data.continentCode,
     };
   }
 }
