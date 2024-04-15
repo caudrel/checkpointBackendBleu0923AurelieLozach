@@ -39,5 +39,5 @@
     "typescript": "^5.4.5"
   },
   "description": "",
-  "type": "module"
+  "type": "commonjs"
 }

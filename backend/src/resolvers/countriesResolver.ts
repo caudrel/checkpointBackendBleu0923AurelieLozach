@@ -2,6 +2,7 @@ import { Resolver, Query, Arg, Mutation, Int } from "type-graphql";
 import { GraphQLError } from "graphql";
 import { Country, NewCountryInput } from "../entities/country";
 import { validate } from "class-validator";
+import { DeepPartial } from "typeorm";
 
 @Resolver(Country)
 class CountriesResolver {
@@ -22,17 +23,24 @@ class CountriesResolver {
   }
 
   @Mutation(() => Country)
-  async createCountry(@Arg("data", { validate: true }) data = NewCountryInput) {
-    const newCountry = new Country();
-    Object.assign(newCountry, data);
-    const errors = await validate(newCountry);
+  async createCountry(@Arg("data") data: NewCountryInput): Promise<Country> {
+    const newCountryData = this.createNewCountryData(data); // Convertit NewCountryInput en DeepPartial<Country>
+    const newCountry = Country.create(newCountryData); // Crée une nouvelle instance de Country à partir des données converties
+    const errors = await validate(newCountry); // Valide la nouvelle instance de Country
     if (errors.length > 0) {
+      // S'il y a des erreurs de validation, lance une GraphQLError avec les erreurs
       throw new GraphQLError(errors.toString());
     }
-    const { id } = await newCountry.save();
-    return Country.findOne({
-      where: { id },
-    });
+    // Si la validation réussit, sauvegarde la nouvelle instance de Country en base de données et la renvoie
+    return await newCountry.save();
+  }
+
+  private createNewCountryData(data: NewCountryInput): DeepPartial<Country> {
+    return {
+      name: data.name,
+      code: data.code,
+      emoji: data.emoji,
+    };
   }
 }
 

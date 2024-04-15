@@ -8,7 +8,7 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import http from "http";
 import { expressMiddleware } from "@apollo/server/express4";
 import { buildSchema } from "type-graphql";
-import CountriesResolver from "./resolvers/CountriesResolver";
+import CountriesResolver from "./resolvers/countriesResolver";
 import env from "./env";
 import dotenv from "dotenv";
 dotenv.config();
@@ -17,14 +17,14 @@ const app = express();
 const httpServer = http.createServer(app);
 const port = 4000;
 
-app.get("/", (req, res) => {
-  res.send("hello world");
-});
+// app.get("/", (req, res) => {
+//   res.send("hello world");
+// });
 
-app.listen(port, async () => {
-  await db.initialize();
-  console.log(`Checkpoint Backend Aurélie app listening on port ${port}`);
-});
+// app.listen(port, async () => {
+//   await db.initialize();
+//   console.log(`Checkpoint Backend Aurélie app listening on port ${port}`);
+// });
 
 schema.then(async (schema) => {
   await db.initialize();
